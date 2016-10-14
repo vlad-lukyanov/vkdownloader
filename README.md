@@ -20,6 +20,7 @@ List your friends with user ids
 
 ### Requirements ###
 Python 3
+(Windows) pypiwin32
 
 
 # Скачиваем музыку с vk.com #

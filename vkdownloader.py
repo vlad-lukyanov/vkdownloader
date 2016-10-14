@@ -183,7 +183,7 @@ class VkDownloader:
     
         for i, t in enumerate(tracks):
             t_name = self.get_track_full_name(t)
-            print("Downloading {} of {}: {}".format(i + 1, total, t_name))
+            uprint("Downloading {} of {}: {}".format(i + 1, total, t_name))
 
             t_dest = dest
             if "album" in t:
@@ -203,10 +203,10 @@ class VkDownloader:
         files = os.listdir(path)
         for f in files:
             if f not in names and os.path.isfile(join(path, f)):
-                print("Deleting {}".format(f))
+                uprint("Deleting {}".format(f))
                 os.remove(join(path, f))
             elif f not in album_names and not isfile(join(path, f)):
-                print("Deleting album {}".format(f))
+                uprint("Deleting album {}".format(f))
                 shutil.rmtree(join(path, f))
                 
 
@@ -226,7 +226,7 @@ class VkDownloader:
     def save_playlist(self, playlist, filename):
         with open(filename, 'w') as f:
             for l in playlist:
-                print(l, file=f)
+                uprint(l, file=f)
         return filename
 
 
@@ -245,12 +245,20 @@ class VkDownloader:
           response = request.urlopen(url)
           js = json.loads(response.read().decode("utf-8"))
           if 'error' in js:
-            print("Error {}: {}".format(js["error"]["error_code"], js["error"]["error_msg"]))
+            uprint("Error {}: {}".format(js["error"]["error_code"], js["error"]["error_msg"]))
             sys.exit(1)
           else:
             return js['response']
         except urllib.error.HTTPError as e:
-          print("Network error `{} - {}`".format(e.code, e.msg))
+          uprint("Network error `{} - {}`".format(e.code, e.msg))
           sys.exit(1)
+          
+def uprint(*objects, sep=' ', end='\n', file=sys.stdout):
+    enc = file.encoding
+    if enc == 'UTF-8':
+        print(*objects, sep=sep, end=end, file=file)
+    else:
+        f = lambda obj: str(obj).encode(enc, errors='backslashreplace').decode(enc)
+        print(*map(f, objects), sep=sep, end=end, file=file)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
